@@ -1,0 +1,28 @@
+buildscript {
+    ext.kotlin_version = '1.4-M3'
+    repositories {
+        jcenter()
+        google()
+        maven { url 'https://kotlin.bintray.com/kotlin-dev' }
+    }
+    dependencies {
+        classpath 'com.android.tools:r8:2.0.88'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha04'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven { url 'https://kotlin.bintray.com/kotlin-dev' }
+        maven {
+            url "https://jitpack.io"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

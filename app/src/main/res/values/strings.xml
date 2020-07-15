@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add">Добавить</string>
+    <string name="app_name">Склад</string>
+    <string name="root">Корневая директория</string>
+    <string name="are_u_sure">Вы уверены?</string>
+    <string name="camera">Камера</string>
+    <string name="choose_element_name">Выберете название элемента</string>
+    <string name="choose_element_name_new">Выберете новое название элемента</string>
+    <string name="create">Создать</string>
+    <string name="gallery">Галерея</string>
+    <string name="hint_under_photo">Описание</string>
+    <string name="remove_description">Убрать описание</string>
+    <string name="sell">Продать</string>
+    <string name="reserve">Пометить</string>
+    <string name="clear_reserve">Снять</string>
+    <string name="cancel_action">Отмена</string>
+    <string name="ok_action">Да</string>
+    <string name="info_action">Ок</string>
+    <string name="sizes">Размеры</string>
+    <string name="folder_is">Папка</string>
+    <string name="folder_non_empty">Папка не пуста!!!</string>
+    <string name="what_would_u_like_do">Что вы хотите сделать?</string>
+</resources>
