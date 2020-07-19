@@ -24,4 +24,7 @@
     <string name="low">Маленький пак(%1$d)</string>
     <string name="medium">Средний пак(%1$d)</string>
     <string name="height">Большой пак(%1$d)</string>
+    <string name="low_pack">Количество маленьких</string>
+    <string name="medium_pack">Количество средних</string>
+    <string name="height_pack">Количество больших</string>
 </resources>

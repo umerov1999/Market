@@ -2,6 +2,8 @@ package com.f0x1d.store.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,11 +16,10 @@ import com.f0x1d.store.R;
 import com.f0x1d.store.fragment.ListFragment;
 import com.f0x1d.store.settings.Settings;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class MainActivity extends AppCompatActivity {
-    private boolean toggle1 = false;
-    private boolean toggle2 = false;
-    private boolean toggle3 = false;
 
     public void onCreate(Bundle bundle) {
         ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.CAMERA"}, 1);
@@ -41,27 +42,80 @@ public class MainActivity extends AppCompatActivity {
         height.setText(getString(R.string.height, Settings.get().getHeightCount()));
 
         low.setOnLongClickListener(v -> {
-            toggle1 = !toggle1;
+            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+            ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.low_pack));
+            ((EditText) inflate.findViewById(R.id.edittext)).setText(String.valueOf(Settings.get().getLowCount()));
+            MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);
+            materialAlertDialogBuilder.setTitle(R.string.low_pack);
+            materialAlertDialogBuilder.setView(inflate);
+            materialAlertDialogBuilder.setPositiveButton(R.string.info_action, (dialogInterface, i) -> {
+                String ret = ((EditText) inflate.findViewById(R.id.edittext)).getText().toString();
+                if (ret == null) {
+                    return;
+                }
+                try {
+                    int count = Integer.parseInt(ret);
+                    low.setText(getString(R.string.low, count));
+                    Settings.get().setLowCount(count);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            });
+            materialAlertDialogBuilder.show();
             return true;
         });
 
         medium.setOnLongClickListener(v -> {
-            toggle2 = !toggle2;
+            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+            ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.medium_pack));
+            ((EditText) inflate.findViewById(R.id.edittext)).setText(String.valueOf(Settings.get().getMediumCount()));
+            MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);
+            materialAlertDialogBuilder.setTitle(R.string.medium_pack);
+            materialAlertDialogBuilder.setView(inflate);
+            materialAlertDialogBuilder.setPositiveButton(R.string.info_action, (dialogInterface, i) -> {
+                String ret = ((EditText) inflate.findViewById(R.id.edittext)).getText().toString();
+                if (ret == null) {
+                    return;
+                }
+                try {
+                    int count = Integer.parseInt(ret);
+                    medium.setText(getString(R.string.medium, count));
+                    Settings.get().setMediumCount(count);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            });
+            materialAlertDialogBuilder.show();
             return true;
         });
 
         height.setOnLongClickListener(v -> {
-            toggle3 = !toggle3;
+            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+            ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.height_pack));
+            ((EditText) inflate.findViewById(R.id.edittext)).setText(String.valueOf(Settings.get().getHeightCount()));
+            MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);
+            materialAlertDialogBuilder.setTitle(R.string.height_pack);
+            materialAlertDialogBuilder.setView(inflate);
+            materialAlertDialogBuilder.setPositiveButton(R.string.info_action, (dialogInterface, i) -> {
+                String ret = ((EditText) inflate.findViewById(R.id.edittext)).getText().toString();
+                if (ret == null) {
+                    return;
+                }
+                try {
+                    int count = Integer.parseInt(ret);
+                    height.setText(getString(R.string.height, count));
+                    Settings.get().setHeightCount(count);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            });
+            materialAlertDialogBuilder.show();
             return true;
         });
 
         low.setOnClickListener(v -> {
             int count = Settings.get().getLowCount();
-            if (!toggle1) {
-                count--;
-            } else {
-                count++;
-            }
+            count--;
             if (count < 0) {
                 count = 0;
             }
@@ -71,11 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         medium.setOnClickListener(v -> {
             int count = Settings.get().getMediumCount();
-            if (!toggle2) {
-                count--;
-            } else {
-                count++;
-            }
+            count--;
             if (count < 0) {
                 count = 0;
             }
@@ -85,11 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         height.setOnClickListener(v -> {
             int count = Settings.get().getHeightCount();
-            if (!toggle3) {
-                count--;
-            } else {
-                count++;
-            }
+            count--;
             if (count < 0) {
                 count = 0;
             }
