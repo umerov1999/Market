@@ -21,4 +21,7 @@
     <string name="folder_is">Папка</string>
     <string name="folder_non_empty">Папка не пуста!!!</string>
     <string name="what_would_u_like_do">Что вы хотите сделать?</string>
+    <string name="low">Маленький пак(%1$d)</string>
+    <string name="medium">Средний пак(%1$d)</string>
+    <string name="height">Большой пак(%1$d)</string>
 </resources>

@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.f0x1d.store.App;
 import com.f0x1d.store.BuildConfig;
 import com.f0x1d.store.R;
+import com.f0x1d.store.activity.MainActivity;
 import com.f0x1d.store.db.Database;
 import com.f0x1d.store.db.daos.ExtendedElementsDao;
 import com.f0x1d.store.db.daos.MenuElementsDao;
@@ -40,6 +41,7 @@ import com.f0x1d.store.view.CenteredToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +58,7 @@ public class ElemInfoFragment extends Fragment {
     public MaterialButton addButton;
     public ImageView bigPhoto;
     public ExtendedFloatingActionButton changePhoto;
+    public FloatingActionButton HomeBtn;
     public EditText description;
     public long elemId;
     public MenuElement element;
@@ -79,6 +82,11 @@ public class ElemInfoFragment extends Fragment {
         this.elemId = requireArguments().getLong("id");
         this.element = App.getInstance().getDatabase().menuElementsDao().getById(this.elemId);
         this.extendedElementsDao = App.getInstance().getDatabase().extendedElementsDao();
+        this.HomeBtn = root.findViewById(R.id.home_button);
+        this.HomeBtn.setOnClickListener(v -> {
+            ((MainActivity) requireActivity()).clearBackStack();
+            ((MainActivity) requireActivity()).replaceFragment(ListFragment.newInstance(-1, getString(R.string.root)), "main_list", false, null);
+        });
 
         this.changePhoto = root.findViewById(R.id.btn_change_photo);
         this.toolbar = root.findViewById(R.id.toolbar);

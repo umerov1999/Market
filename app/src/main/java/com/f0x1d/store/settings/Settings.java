@@ -38,6 +38,36 @@ public class Settings {
         preferences.edit().putString("night_switch", String.valueOf(key)).apply();
     }
 
+    public int getLowCount() {
+        return PreferenceManager.getDefaultSharedPreferences(app)
+                .getInt("low_packet", 0);
+    }
+
+    public void setLowCount(int vl) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit()
+                .putInt("low_packet", vl).apply();
+    }
+
+    public int getMediumCount() {
+        return PreferenceManager.getDefaultSharedPreferences(app)
+                .getInt("medium_packet", 0);
+    }
+
+    public void setMediumCount(int vl) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit()
+                .putInt("medium_packet", vl).apply();
+    }
+
+    public int getHeightCount() {
+        return PreferenceManager.getDefaultSharedPreferences(app)
+                .getInt("height_packet", 0);
+    }
+
+    public void setHeightCount(int vl) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit()
+                .putInt("height_packet", vl).apply();
+    }
+
     @AppCompatDelegate.NightMode
     public int getNightMode() {
         String mode = PreferenceManager.getDefaultSharedPreferences(app)
