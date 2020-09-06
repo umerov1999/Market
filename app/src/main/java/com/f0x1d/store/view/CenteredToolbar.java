@@ -34,7 +34,7 @@ public class CenteredToolbar extends Toolbar {
     }
 
     public CharSequence getTitle() {
-        return this.tvTitle.getText().toString();
+        return tvTitle.getText().toString();
     }
 
     public void setTitle(int i) {
@@ -42,11 +42,11 @@ public class CenteredToolbar extends Toolbar {
     }
 
     public void setTitle(CharSequence charSequence) {
-        this.tvTitle.setText(charSequence);
+        tvTitle.setText(charSequence);
     }
 
     public CharSequence getSubtitle() {
-        return this.tvSubtitle.getText().toString();
+        return tvSubtitle.getText().toString();
     }
 
     public void setSubtitle(int i) {
@@ -54,24 +54,24 @@ public class CenteredToolbar extends Toolbar {
     }
 
     public void setSubtitle(CharSequence charSequence) {
-        this.tvSubtitle.setVisibility(VISIBLE);
-        this.tvSubtitle.setText(charSequence);
+        tvSubtitle.setVisibility(VISIBLE);
+        tvSubtitle.setText(charSequence);
     }
 
     private void setupTextViews() {
-        this.tvSubtitle = new TextView(getContext());
-        this.tvTitle = new TextView(getContext());
-        this.tvTitle.setEllipsize(TextUtils.TruncateAt.END);
-        this.tvTitle.setTextAppearance(getContext(), R.style.TextAppearance_AppCompat_Body2);
+        tvSubtitle = new TextView(getContext());
+        tvTitle = new TextView(getContext());
+        tvTitle.setEllipsize(TextUtils.TruncateAt.END);
+        tvTitle.setTextAppearance(getContext(), R.style.TextAppearance_AppCompat_Body2);
         LinearLayout linear = new LinearLayout(getContext());
         linear.setGravity(17);
         linear.setOrientation(LinearLayout.VERTICAL);
-        linear.addView(this.tvTitle);
-        linear.addView(this.tvSubtitle);
-        this.tvSubtitle.setSingleLine();
-        this.tvSubtitle.setEllipsize(TextUtils.TruncateAt.END);
-        this.tvSubtitle.setTextAppearance(getContext(), R.style.TextAppearance_AppCompat_Caption);
-        this.tvSubtitle.setVisibility(GONE);
+        linear.addView(tvTitle);
+        linear.addView(tvSubtitle);
+        tvSubtitle.setSingleLine();
+        tvSubtitle.setEllipsize(TextUtils.TruncateAt.END);
+        tvSubtitle.setTextAppearance(getContext(), R.style.TextAppearance_AppCompat_Caption);
+        tvSubtitle.setVisibility(GONE);
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(-2, -2);
         layoutParams.gravity = 17;
         linear.setLayoutParams(layoutParams);

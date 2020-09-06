@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 @Entity
 public class ExtendedElement {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public long id;
     public long ownerId;
     public boolean reserved;

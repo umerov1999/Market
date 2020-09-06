@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -68,17 +69,17 @@ public class ListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
 
-        this.inFolderId = requireArguments().getLong("inFolderId");
-        this.HomeBtn = root.findViewById(R.id.home_button);
-        this.HomeBtn.setVisibility(this.inFolderId == -1 ? View.GONE : View.VISIBLE);
-        this.createButton = root.findViewById(R.id.btn_create);
-        this.NightModeBtn = root.findViewById(R.id.day_night);
-        this.recyclerView = root.findViewById(R.id.recycler_view);
-        this.toolbar = root.findViewById(R.id.toolbar);
-        this.toolbar.setTitle(requireArguments().getString("folder_name"));
-        this.menuElementsDao = App.getInstance().getDatabase().menuElementsDao();
-        this.menuElements = this.menuElementsDao.getAll(this.inFolderId);
-        this.NightModeBtn.setOnClickListener(v -> {
+        inFolderId = requireArguments().getLong("inFolderId");
+        HomeBtn = root.findViewById(R.id.home_button);
+        HomeBtn.setVisibility(inFolderId == -1 ? View.GONE : View.VISIBLE);
+        createButton = root.findViewById(R.id.btn_create);
+        NightModeBtn = root.findViewById(R.id.day_night);
+        recyclerView = root.findViewById(R.id.recycler_view);
+        toolbar = root.findViewById(R.id.toolbar);
+        toolbar.setTitle(requireArguments().getString("folder_name"));
+        menuElementsDao = App.getInstance().getDatabase().menuElementsDao();
+        menuElements = menuElementsDao.getAll(inFolderId);
+        NightModeBtn.setOnClickListener(v -> {
             if (Settings.get().isDarkModeEnabled(requireActivity())) {
                 Settings.get().switchNightMode(NightMode.DISABLE);
                 AppCompatDelegate.setDefaultNightMode(NightMode.DISABLE);
@@ -87,12 +88,12 @@ public class ListFragment extends Fragment {
                 AppCompatDelegate.setDefaultNightMode(NightMode.ENABLE);
             }
         });
-        this.HomeBtn.setOnClickListener(v -> {
+        HomeBtn.setOnClickListener(v -> {
             ((MainActivity) requireActivity()).clearBackStack();
-            ((MainActivity) requireActivity()).replaceFragment(ListFragment.newInstance(-1, getString(R.string.root)), "main_list", false, null);
+            ((MainActivity) requireActivity()).replaceFragment(newInstance(-1, getString(R.string.root)), "main_list", false, null);
         });
-        this.createButton.setOnClickListener(view1 -> {
-            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text_with_type, null);
+        createButton.setOnClickListener(view1 -> {
+            View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text_with_type, null);
             ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.choose_element_name));
             MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireActivity());
             materialAlertDialogBuilder.setTitle(R.string.choose_element_name);
@@ -104,10 +105,10 @@ public class ListFragment extends Fragment {
             });
             materialAlertDialogBuilder.show();
         });
-        this.recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2, GridLayoutManager.VERTICAL, false));
-        RecyclerView recyclerView2 = this.recyclerView;
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2, LinearLayoutManager.VERTICAL, false));
+        RecyclerView recyclerView2 = recyclerView;
         ListItemsAdapter listItemsAdapter = new ListItemsAdapter();
-        this.adapter = listItemsAdapter;
+        adapter = listItemsAdapter;
         recyclerView2.setAdapter(listItemsAdapter);
         new ItemTouchHelper(new ItemTouchHelper.Callback() {
             public boolean isItemViewSwipeEnabled() {
@@ -126,23 +127,23 @@ public class ListFragment extends Fragment {
                 return makeMovementFlags(0, 48);
             }
 
-            public void onSwiped(@NotNull final RecyclerView.ViewHolder viewHolder, int i) {
+            public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int i) {
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireActivity());
                 materialAlertDialogBuilder.setCancelable(false);
                 materialAlertDialogBuilder.setTitle(R.string.are_u_sure);
                 materialAlertDialogBuilder.setMessage(R.string.what_would_u_like_do);
                 materialAlertDialogBuilder.setPositiveButton(R.string.sell, (dialogInterface, i1) -> {
-                    MenuElement remove = menuElements.get(viewHolder.getAdapterPosition());
+                    MenuElement remove = menuElements.get(viewHolder.getBindingAdapterPosition());
                     if (remove.isFolder && !menuElementsDao.getAll(remove.id).isEmpty()) {
                         new MaterialAlertDialogBuilder(requireActivity()).setCancelable(false).setMessage(R.string.folder_non_empty)
                                 .setPositiveButton(R.string.info_action, (dlo, i78) -> {
                                     dialogInterface.cancel();
-                                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                                    adapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
                                 }).create().show();
                         return;
                     }
 
-                    menuElements.remove(viewHolder.getAdapterPosition());
+                    menuElements.remove(viewHolder.getBindingAdapterPosition());
 
                     menuElementsDao.delete(remove.id);
                     menuElementsDao.deleteAllExtendElements(remove.id);
@@ -152,15 +153,15 @@ public class ListFragment extends Fragment {
                             vv.delete();
                         }
                     }
-                    adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                    adapter.notifyItemRemoved(viewHolder.getBindingAdapterPosition());
                 });
                 materialAlertDialogBuilder.setNeutralButton(R.string.cancel_action, (dialogInterface, i12) -> {
                     dialogInterface.cancel();
-                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    adapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
                 });
                 materialAlertDialogBuilder.show();
             }
-        }).attachToRecyclerView(this.recyclerView);
+        }).attachToRecyclerView(recyclerView);
         return root;
     }
 
@@ -196,8 +197,8 @@ public class ListFragment extends Fragment {
             }
         }
 
-        public void setupElement(ListItemElementViewHolder listItemElementViewHolder, final int i) {
-            final MenuElement menuElement = menuElements.get(i);
+        public void setupElement(ListItemElementViewHolder listItemElementViewHolder, int i) {
+            MenuElement menuElement = menuElements.get(i);
             if (menuElement.imageSource != null) {
                 //listItemElementViewHolder.imageView.setVisibility(View.VISIBLE);
                 Glide.with(ListFragment.this).asBitmap().load(new File(menuElement.imageSource)).apply(new RequestOptions().centerCrop().dontAnimate()).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(listItemElementViewHolder.imageView);
@@ -232,7 +233,7 @@ public class ListFragment extends Fragment {
                 ((MainActivity) requireActivity()).replaceFragment(ElemInfoFragment.newInstance(menuElement.id), "info", true, null);
             });
             listItemElementViewHolder.itemView.setOnLongClickListener(view -> {
-                final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+                View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
                 ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.choose_element_name_new));
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireActivity());
                 materialAlertDialogBuilder.setTitle(R.string.choose_element_name_new);
@@ -289,7 +290,7 @@ public class ListFragment extends Fragment {
                 return true;
             });
             listItemFolderViewHolder.itemView.setOnClickListener(view -> {
-                ((MainActivity) requireActivity()).replaceFragment(ListFragment.newInstance(menuElement.id, menuElement.name), "info", true, null);
+                ((MainActivity) requireActivity()).replaceFragment(newInstance(menuElement.id, menuElement.name), "info", true, null);
             });
         }
 
@@ -318,8 +319,8 @@ public class ListFragment extends Fragment {
 
             public ListItemElementViewHolder(View view) {
                 super(view);
-                this.imageView = view.findViewById(R.id.image_view);
-                this.text = view.findViewById(R.id.text);
+                imageView = view.findViewById(R.id.image_view);
+                text = view.findViewById(R.id.text);
             }
         }
 
@@ -329,8 +330,8 @@ public class ListFragment extends Fragment {
 
             public ListItemFolderViewHolder(View view) {
                 super(view);
-                this.imageView = view.findViewById(R.id.image_view);
-                this.text = view.findViewById(R.id.text);
+                imageView = view.findViewById(R.id.image_view);
+                text = view.findViewById(R.id.text);
             }
         }
     }

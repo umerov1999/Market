@@ -15,7 +15,7 @@ public class Settings {
     private final Context app;
 
     public Settings(Context context) {
-        this.app = context.getApplicationContext();
+        app = context.getApplicationContext();
     }
 
     @NonNull

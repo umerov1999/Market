@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.4-M3'
+    ext.kotlin_version = '1.4.0'
     repositories {
         jcenter()
         google()
         maven { url 'https://kotlin.bintray.com/kotlin-dev' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha04'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha09'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }

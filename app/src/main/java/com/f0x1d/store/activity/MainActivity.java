@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         height.setText(getString(R.string.height, Settings.get().getHeightCount()));
 
         low.setOnLongClickListener(v -> {
-            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+            View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
             ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.low_pack));
             ((EditText) inflate.findViewById(R.id.edittext)).setText(String.valueOf(Settings.get().getLowCount()));
             MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         medium.setOnLongClickListener(v -> {
-            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+            View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
             ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.medium_pack));
             ((EditText) inflate.findViewById(R.id.edittext)).setText(String.valueOf(Settings.get().getMediumCount()));
             MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         height.setOnLongClickListener(v -> {
-            final View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
+            View inflate = getLayoutInflater().inflate(R.layout.dialog_edit_text, null);
             ((TextInputLayout) inflate.findViewById(R.id.edittext_layout)).setHint(getString(R.string.height_pack));
             ((EditText) inflate.findViewById(R.id.edittext)).setText(String.valueOf(Settings.get().getHeightCount()));
             MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(this);

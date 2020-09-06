@@ -16,9 +16,9 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
     private final float mTextSize;
 
     public RoundedBackgroundSpan(int i, int i2, float f) {
-        this.mBackgroundColor = i;
-        this.mTextColor = i2;
-        this.mTextSize = f;
+        mBackgroundColor = i;
+        mTextColor = i2;
+        mTextSize = f;
     }
 
     public static int dpToPx(int i) {
@@ -27,14 +27,14 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
 
     public void draw(Canvas canvas, CharSequence charSequence, int i, int i2, float f, int i3, int i4, int i5, Paint paint) {
         Paint paint2 = new Paint(paint);
-        paint2.setTextSize(this.mTextSize);
-        paint2.setColor(this.mBackgroundColor);
+        paint2.setTextSize(mTextSize);
+        paint2.setColor(mBackgroundColor);
         float dpToPx = (float) dpToPx(2);
         float f3 = (float) i3;
         float f4 = PADDING_Y;
-        float f5 = f3 + dpToPx + f4 + this.mTextSize + f4 + dpToPx;
+        float f5 = f3 + dpToPx + f4 + mTextSize + f4 + dpToPx;
         canvas.drawRoundRect(new RectF(f, f3, ((float) getTagWidth(charSequence, i, i2, paint2)) + f, f5), 12.0f, 12.0f, paint2);
-        paint2.setColor(this.mTextColor);
+        paint2.setColor(mTextColor);
         canvas.drawText(charSequence, i, i2, f + PADDING_X, ((f5 - PADDING_Y) - dpToPx) - MAGIC_NUMBER, paint2);
     }
 
@@ -44,7 +44,7 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
 
     public int getSize(Paint paint, CharSequence charSequence, int i, int i2, Paint.FontMetricsInt fontMetricsInt) {
         Paint paint2 = new Paint(paint);
-        paint2.setTextSize(this.mTextSize);
+        paint2.setTextSize(mTextSize);
         return getTagWidth(charSequence, i, i2, paint2);
     }
 }

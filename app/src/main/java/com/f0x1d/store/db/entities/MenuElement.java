@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 @Entity
 public class MenuElement {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public long id;
     public String description;
     public long editTime = System.currentTimeMillis();

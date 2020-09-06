@@ -38,10 +38,10 @@ public class App extends Application {
                 .apply();
 
         //this.database = Room.databaseBuilder(this, Database.class, "main_database.db").addMigrations(Database.MIGRATION_1_2).allowMainThreadQueries().build();
-        this.database = Room.databaseBuilder(this, Database.class, "main_database.db").allowMainThreadQueries().build();
+        database = Room.databaseBuilder(this, Database.class, "main_database.db").allowMainThreadQueries().build();
     }
 
     public Database getDatabase() {
-        return this.database;
+        return database;
     }
 }

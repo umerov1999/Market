@@ -38,6 +38,7 @@ import com.f0x1d.store.db.entities.ExtendedElement;
 import com.f0x1d.store.db.entities.MenuElement;
 import com.f0x1d.store.utils.FileUtils;
 import com.f0x1d.store.view.CenteredToolbar;
+import com.f0x1d.store.view.ExtendedEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -79,20 +80,20 @@ public class ElemInfoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_elem_info, container, false);
-        this.elemId = requireArguments().getLong("id");
-        this.element = App.getInstance().getDatabase().menuElementsDao().getById(this.elemId);
-        this.extendedElementsDao = App.getInstance().getDatabase().extendedElementsDao();
-        this.HomeBtn = root.findViewById(R.id.home_button);
-        this.HomeBtn.setOnClickListener(v -> {
+        elemId = requireArguments().getLong("id");
+        element = App.getInstance().getDatabase().menuElementsDao().getById(elemId);
+        extendedElementsDao = App.getInstance().getDatabase().extendedElementsDao();
+        HomeBtn = root.findViewById(R.id.home_button);
+        HomeBtn.setOnClickListener(v -> {
             ((MainActivity) requireActivity()).clearBackStack();
             ((MainActivity) requireActivity()).replaceFragment(ListFragment.newInstance(-1, getString(R.string.root)), "main_list", false, null);
         });
 
-        this.changePhoto = root.findViewById(R.id.btn_change_photo);
-        this.toolbar = root.findViewById(R.id.toolbar);
-        this.recyclerView = root.findViewById(R.id.recycler_view);
-        this.addButton = root.findViewById(R.id.add_btn);
-        this.changePhoto.setOnClickListener(view1 -> {
+        changePhoto = root.findViewById(R.id.btn_change_photo);
+        toolbar = root.findViewById(R.id.toolbar);
+        recyclerView = root.findViewById(R.id.recycler_view);
+        addButton = root.findViewById(R.id.add_btn);
+        changePhoto.setOnClickListener(view1 -> {
             MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireActivity());
             materialAlertDialogBuilder.setItems(new CharSequence[]{getString(R.string.camera), getString(R.string.gallery)}, (dialogInterface, i) -> {
                 if (i == 0) {
@@ -117,32 +118,32 @@ public class ElemInfoFragment extends Fragment {
                         }
                     }
                 } else if (i == 1) {
-                    FileUtils.openImage("*/*", 228, ElemInfoFragment.this);
+                    FileUtils.openImage("*/*", 228, this);
                 }
             });
             materialAlertDialogBuilder.show();
         });
-        this.toolbar.setTitle(this.element.name);
-        this.toolbar.inflateMenu(R.menu.edit_item_menu);
-        this.toolbar.getMenu().findItem(R.id.remove_description).setOnMenuItemClickListener(menuItem -> {
+        toolbar.setTitle(element.name);
+        toolbar.inflateMenu(R.menu.edit_item_menu);
+        toolbar.getMenu().findItem(R.id.remove_description).setOnMenuItemClickListener(menuItem -> {
             description.setVisibility(View.GONE);
             SharedPreferences.Editor edit = App.getDefaultPreferences().edit();
             edit.putBoolean(elemId + "_desc", false).apply();
             return true;
         });
-        this.addButton.setOnClickListener(v -> addButton());
-        this.extendedElements.add(null);
-        this.extendedElements.addAll(this.extendedElementsDao.getAll(this.elemId));
+        addButton.setOnClickListener(v -> addButton());
+        extendedElements.add(null);
+        extendedElements.addAll(extendedElementsDao.getAll(elemId));
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 4);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             public int getSpanSize(int i) {
                 return i == ExtendedItemsAdapter.HEADER ? 4 : 1;
             }
         });
-        this.recyclerView.setLayoutManager(gridLayoutManager);
-        RecyclerView recyclerView2 = this.recyclerView;
+        recyclerView.setLayoutManager(gridLayoutManager);
+        RecyclerView recyclerView2 = recyclerView;
         ExtendedItemsAdapter extendedItemsAdapter = new ExtendedItemsAdapter();
-        this.adapter = extendedItemsAdapter;
+        adapter = extendedItemsAdapter;
         recyclerView2.setAdapter(extendedItemsAdapter);
         new ItemTouchHelper(new ItemTouchHelper.Callback() {
             public boolean isItemViewSwipeEnabled() {
@@ -164,8 +165,8 @@ public class ElemInfoFragment extends Fragment {
                 return 0;
             }
 
-            public void onSwiped(@NotNull final RecyclerView.ViewHolder viewHolder, int i) {
-                final ExtendedElement work = extendedElements.get(viewHolder.getAdapterPosition());
+            public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int i) {
+                ExtendedElement work = extendedElements.get(viewHolder.getBindingAdapterPosition());
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireActivity());
                 materialAlertDialogBuilder.setCancelable(false);
                 materialAlertDialogBuilder.setTitle(R.string.are_u_sure);
@@ -173,34 +174,34 @@ public class ElemInfoFragment extends Fragment {
                 materialAlertDialogBuilder.setNeutralButton(work.reserved ? R.string.clear_reserve : R.string.reserve, (dialogInterface1, i2) -> {
                     extendedElementsDao.updateReserved(!work.reserved, work.id);
                     work.reserved = !work.reserved;
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
                 });
                 materialAlertDialogBuilder.setPositiveButton(R.string.sell, (dialogInterface, i1) -> {
-                    extendedElementsDao.delete(extendedElements.remove(viewHolder.getAdapterPosition()).id);
-                    adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                    extendedElementsDao.delete(extendedElements.remove(viewHolder.getBindingAdapterPosition()).id);
+                    adapter.notifyItemRemoved(viewHolder.getBindingAdapterPosition());
                 });
                 materialAlertDialogBuilder.setNegativeButton(R.string.cancel_action, (dialogInterface, i12) -> {
                     dialogInterface.cancel();
-                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    adapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
                 });
                 materialAlertDialogBuilder.show();
             }
-        }).attachToRecyclerView(this.recyclerView);
+        }).attachToRecyclerView(recyclerView);
         return root;
     }
 
     private void addButton() {
         ExtendedElement extendedElement = new ExtendedElement();
-        extendedElement.ownerId = this.elemId;
+        extendedElement.ownerId = elemId;
         extendedElement.id = Database.getExtendedLastId() + 1;
         extendedElement.text = "";
         extendedElement.reserved = false;
-        this.extendedElementsDao.insert(extendedElement);
-        List<ExtendedElement> list = this.extendedElements;
+        extendedElementsDao.insert(extendedElement);
+        List<ExtendedElement> list = extendedElements;
         list.add(list.size(), extendedElement);
-        ExtendedItemsAdapter extendedItemsAdapter = this.adapter;
+        ExtendedItemsAdapter extendedItemsAdapter = adapter;
         extendedItemsAdapter.notifyItemInserted(extendedItemsAdapter.getItemCount());
-        this.recyclerView.scrollToPosition(this.adapter.getItemCount() - 1);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     public File createImageFile() throws IOException {
@@ -211,7 +212,7 @@ public class ElemInfoFragment extends Fragment {
         }
         File file3 = new File(file, str + ".jpg");
         file3.createNewFile();
-        this.currentPhotoPath = file3.getAbsolutePath();
+        currentPhotoPath = file3.getAbsolutePath();
         return file3;
     }
 
@@ -231,7 +232,7 @@ public class ElemInfoFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                MenuElement remove = App.getInstance().getDatabase().menuElementsDao().getById(this.elemId);
+                MenuElement remove = App.getInstance().getDatabase().menuElementsDao().getById(elemId);
                 if (remove.imageSource != null && !remove.imageSource.isEmpty()) {
                     File vv = new File(remove.imageSource);
                     if (vv.exists()) {
@@ -239,14 +240,14 @@ public class ElemInfoFragment extends Fragment {
                     }
                 }
 
-                App.getInstance().getDatabase().menuElementsDao().updateImage(file2.getAbsolutePath(), this.elemId);
-                Glide.with(this).load(file2).apply(new RequestOptions().centerCrop()).into(this.bigPhoto);
-                this.bigPhoto.setVisibility(View.VISIBLE);
+                App.getInstance().getDatabase().menuElementsDao().updateImage(file2.getAbsolutePath(), elemId);
+                Glide.with(this).load(file2).apply(new RequestOptions().centerCrop()).into(bigPhoto);
+                bigPhoto.setVisibility(View.VISIBLE);
             }
             if (i == 1337) {
-                File file3 = new File(this.currentPhotoPath);
+                File file3 = new File(currentPhotoPath);
 
-                MenuElement remove = App.getInstance().getDatabase().menuElementsDao().getById(this.elemId);
+                MenuElement remove = App.getInstance().getDatabase().menuElementsDao().getById(elemId);
                 if (remove.imageSource != null && !remove.imageSource.isEmpty()) {
                     File vv = new File(remove.imageSource);
                     if (vv.exists()) {
@@ -254,9 +255,9 @@ public class ElemInfoFragment extends Fragment {
                     }
                 }
 
-                App.getInstance().getDatabase().menuElementsDao().updateImage(file3.getAbsolutePath(), this.elemId);
-                Glide.with(this).load(file3).apply(new RequestOptions().centerCrop()).into(this.bigPhoto);
-                this.bigPhoto.setVisibility(View.VISIBLE);
+                App.getInstance().getDatabase().menuElementsDao().updateImage(file3.getAbsolutePath(), elemId);
+                Glide.with(this).load(file3).apply(new RequestOptions().centerCrop()).into(bigPhoto);
+                bigPhoto.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -307,7 +308,7 @@ public class ElemInfoFragment extends Fragment {
 
         public void setupItem(EditTextViewHolder editTextViewHolder, int i) {
             editTextViewHolder.editText.setHint(null);
-            final ExtendedElement extendedElement = extendedElements.get(i);
+            ExtendedElement extendedElement = extendedElements.get(editTextViewHolder.getBindingAdapterPosition());
             TextWatcher r1 = new TextWatcher() {
                 public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 }
@@ -320,7 +321,7 @@ public class ElemInfoFragment extends Fragment {
                     extendedElement.text = editable.toString();
                 }
             };
-            editTextViewHolder.editText.removeTextChangedListener(r1);
+            editTextViewHolder.editText.clearTextChangedListeners();
             editTextViewHolder.editText.setText(extendedElement.text);
             editTextViewHolder.editText.setImeOptions(0);
             editTextViewHolder.editText.setTextColor(extendedElement.reserved ? Color.parseColor("#DE0D69") : getColorPrimary());
@@ -332,7 +333,7 @@ public class ElemInfoFragment extends Fragment {
         }
 
         public void setupHeader(BigPicViewHolder bigPicViewHolder) {
-            final MenuElementsDao menuElementsDao = App.getInstance().getDatabase().menuElementsDao();
+            MenuElementsDao menuElementsDao = App.getInstance().getDatabase().menuElementsDao();
             bigPhoto = bigPicViewHolder.imageView;
             description = bigPicViewHolder.descriptionEditText;
             try {
@@ -368,17 +369,17 @@ public class ElemInfoFragment extends Fragment {
 
             public BigPicViewHolder(View view) {
                 super(view);
-                this.imageView = view.findViewById(R.id.image);
-                this.descriptionEditText = view.findViewById(R.id.edittext);
+                imageView = view.findViewById(R.id.image);
+                descriptionEditText = view.findViewById(R.id.edittext);
             }
         }
 
         public class EditTextViewHolder extends RecyclerView.ViewHolder {
-            public EditText editText;
+            public ExtendedEditText editText;
 
             public EditTextViewHolder(View view) {
                 super(view);
-                this.editText = view.findViewById(R.id.edittext);
+                editText = view.findViewById(R.id.edittext);
             }
         }
     }

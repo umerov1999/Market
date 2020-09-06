@@ -15,7 +15,7 @@
         app:hintAnimationEnabled="false"
         app:hintEnabled="false">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.f0x1d.store.view.ExtendedEditText
             android:id="@+id/edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
